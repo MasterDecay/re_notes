@@ -1,0 +1,465 @@
+<html>
+<head>
+
+ <!-- Highlighter -->
+ <link rel="stylesheet" href="styles/default.css">
+ <script src="highlight.pack.js"></script>
+ <script>hljs.initHighlightingOnLoad();</script>
+
+ <link rel="stylesheet" href="CSS/main.css">
+ <title>01_hello_world.c</title>
+
+</head>
+<body class="body">
+
+ <center><h1>Hello World</h1></center>
+ 
+ <!-- Original code table -->
+ <b>C Code</b>
+ <table class="table">
+ 
+ <!-- Code -->
+ <tr>
+ <td class="column">
+ <pre><code>
+ /* Hello World program */
+
+ #include &lt;stdio.h&gt;
+
+ main()
+ {
+     printf("Hello World");
+ }
+ </code></pre>
+ </td>
+ 
+ <!-- Comments -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- x86 Assembly table -->
+ <div style="column">
+  <b>x86 Assembler</b><br/>
+  GCC: 4.9.3<br/>
+  Compiled: gcc -O0 -m32 -o 01_hello_world_32bit <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -M intel -d 01_hello_world_32bit<br/>
+ </div> 
+
+ <table class="table">
+ <tr>
+ 
+ <!-- Code -->
+ <td class="column">
+ <pre><code>
+ 0804841b &lt;main&gt;:
+  804841b:       8d 4c 24 04             lea    ecx,[esp+0x4]
+  804841f:       83 e4 f0                and    esp,0xfffffff0
+  8048422:       ff 71 fc                push   DWORD PTR [ecx-0x4]
+  8048425:       55                      push   ebp
+  8048426:       89 e5                   mov    ebp,esp
+  8048428:       51                      push   ecx
+  8048429:       83 ec 04                sub    esp,0x4
+  804842c:       83 ec 0c                sub    esp,0xc
+  804842f:       68 d0 84 04 08          push   0x80484d0
+  8048434:       e8 b7 fe ff ff          call   80482f0 &lt;printf@plt&gt;
+  8048439:       83 c4 10                add    esp,0x10
+  804843c:       8b 4d fc                mov    ecx,DWORD PTR [ebp-0x4]
+  804843f:       c9                      leave  
+  8048440:       8d 61 fc                lea    esp,[ecx-0x4]
+  8048443:       c3                      ret    
+  8048444:       66 90                   xchg   ax,ax
+  8048446:       66 90                   xchg   ax,ax
+  8048448:       66 90                   xchg   ax,ax
+  804844a:       66 90                   xchg   ax,ax
+  804844c:       66 90                   xchg   ax,ax
+  804844e:       66 90                   xchg   ax,ax
+ </code></pre>
+ </td>
+ 
+ <!-- Comments -->
+ <td class="column">
+ <ul>
+     <li>What is <a href="http://stackoverflow.com/questions/672461/what-is-stack-alignment">Stack Alignment</a>, and why we need it
+     </li>
+     <li><pre><code>and esp,0xfffffff0</code></pre> GCC stack allignment, Details: <a href="http://stackoverflow.com/questions/24588858/and-esp-0xfffffff0">and exp,0xfffffff0</a>
+     </li>
+     <li><pre><code>xchg ax,ax</code></pre> NOP analogue, Details: <a href="http://stackoverflow.com/questions/2136043/why-does-visual-studio-use-xchg-ax-ax">Why does Visual Studio use xchg ax,ax</a>
+     </li>
+ </ul>
+ </td>
+ </tr>
+ </table>
+
+ <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_32bit 
+
+ <table class="table">
+ <tr>
+ <td class="column">
+ <pre><code>
+ 01_hello_world_32bit:     file format elf32-i386
+
+ Contents of section .rodata:
+ 80484c8 03000000 01000200 48656c6c 6f20576f  ........Hello Wo
+ 80484d8 726c6400                             rld.      
+ </code></pre>
+ </td>
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- 64 bit Assembly -->
+ <div style="column">
+  <b>x86_64 Assembler</b><br/>
+  GCC: 4.9.3<br/>
+  Compiled: gcc -O0 -m64 -o 01_hello_world_64bit <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -M intel -D 01_hello_world_64bit<br/> 
+ </div>
+
+ <table class="table">
+ <tr>
+ 
+ <!-- Code -->
+ <td class="column">
+ <pre><code>
+  0000000000400556 &lt;main&gt;:
+            400556:       55                      push   rbp
+            400557:       48 89 e5                mov    rbp,rsp
+            40055a:       bf f4 05 40 00          mov    edi,0x4005f4
+            40055f:       b8 00 00 00 00          mov    eax,0x0
+            400564:       e8 c7 fe ff ff          call   400430 &lt;printf@plt&gt;
+            400569:       5d                      pop    rbp
+            40056a:       c3                      ret    
+            40056b:       0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
+ </code></pre>
+ </td>
+
+ <!-- Comments -->
+ <td class="column">
+ <ul>
+   <li><pre><code>mov eax,0x00</code></pre> In the x86_64 ABI, if a function has variable arguments then AL (which is part of EAX) is expected to hold the number of vector registers used to hold arguments to that function. Details: <a href="http://stackoverflow.com/questions/6212665/why-is-eax-zeroed-before-a-call-to-printf">Why is %eax zeroed before a call to printf?</a></li>
+ </ul>
+ </td>
+ </tr>
+ </table>
+
+ <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_64bit 
+ 
+ <table class="table">
+ <tr>
+ <td class="column">
+ <pre><code>
+ 01_hello_world_64bit:     file format elf64-x86-64
+
+ Contents of section .rodata:
+  4005f0 01000200 48656c6c 6f20576f 726c6400  ....Hello World.
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- ARM 64 bit Assembly -->
+ <div style="column">
+  <b>ARM 64 bit Assembler (aarch64)</b><br/>
+  GCC: 5.4.0<br/>
+  Compiled: gcc -O0 -o 01_hello_world_aarch64 <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -d 01_hello_world_aarch64<br/> 
+ </div>
+
+ <table class="table">
+ <tr>
+ 
+ <!-- Code -->
+ <td class="column">
+ <pre><code>
+  00000000004005c0 &lt;main&gt;:
+            4005c0:       a9bf7bfd        stp     x29, x30, [sp,#-16]!
+            4005c4:       910003fd        mov     x29, sp
+            4005c8:       90000000        adrp    x0, 400000 &lt;_init-0x3f0&gt;
+            4005cc:       9119e000        add     x0, x0, #0x678
+            4005d0:       97ffffa4        bl      400460 &lt;printf@plt&gt;
+            4005d4:       52800000        mov     w0, #0x0                      // #0
+            4005d8:       a8c17bfd        ldp     x29, x30, [sp],#16
+            4005dc:       d65f03c0        ret
+ </code></pre>
+ </td>
+
+ <!-- Comments -->
+ <td class="column">
+  <ul>
+   <li>
+       <pre><code>stp x29, x30, [sp,#-16]!</code></pre>
+       Push X29 and X30 to the stack. X29 - <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=119">Frame Pointer (FP)</a>, X30 - <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=119">Procedure Link Register (LR)</a><br/>
+       - <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=121">FP and LP on the AAPC64 stack</a><br/>
+       - Store Instruction Format: <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=79">STR</a>, <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=82">STP</a>
+   </li>
+   <li>
+       <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=38">ARM64 Registers</a>
+   </li>
+   <li>
+       <pre><code>adrp x0, 400000 &lt;_init-0x3f0&gt;
+add  x0, x0, #0x678</code></pre>
+       Computation of address of string ("Hello World"). This permits positionindependent addressing of any location within &#177;4GiB of the PC using two instructions.<br/>
+       - <a href="PDF/02_ARM_Reference_Manual.pdf#page=35">ADRP</a>, <a href="PDF/02_ARM_Reference_Manual.pdf#page=32">ADD</a> instructions
+   </li>    
+   <li>
+       <pre><code>bl 400460 &lt;printf@plt&gt;</code></pre>
+       Flow control instruction: <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=85">BL</a>
+   </li>    
+   <li>
+       <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=118">Register use in the AArch64 Procedure Call Standard</a>
+   </li>
+   <li>
+       <pre><code>mov w0, #0x0</code></pre>
+       return 0; translated into ARM64 Assembly
+   </li>    
+   <li>
+       <pre><code>ldp x29, x30, [sp], #16</code></pre>
+       Restore FP' and LR' before setting the stack pointer to its original position.<br/>
+       - Load Instruction Format: <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=78">LDR</a>, <a href="PDF/01_ARMv8_Cortex-A_Series_Programmers_Guide.pdf#page=82">LDP</a>
+   </li>
+  </ul>
+ </td>
+ </tr>
+ </table>
+
+ <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_aarch64 
+ 
+ <table class="table">
+ <tr> 
+ <td class="column">
+ <pre><code>
+  
+  01_hello_world_aarch64:     file format elf64-littleaarch64
+
+  Contents of section .rodata:
+  400670 01000200 00000000 48656c6c 6f20576f  ........Hello Wo
+  400680 726c6400                             rld.  
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ Dumped: objdump -s -j .plt 01_hello_world_aarch64 
+ 
+ <table class="table">
+ <tr> 
+ <td class="column">
+ <pre><code>
+  Disassembly of section .plt:
+
+  0000000000400460 &lt;printf@plt&gt;:
+            400460:       b0000090        adrp    x16, 411000 &lt;_GLOBAL_OFFSET_TABLE_+0x28&gt;
+            400464:       f9400e11        ldr     x17, [x16,#24]
+            400468:       91006210        add     x16, x16, #0x18
+            40046c:       d61f0220        br      x17
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- ARM 32 bit Assembly (ARM) -->
+ <div style="column">
+  <b>ARM 32bit Assembler (ARM)</b><br/>
+  GCC: 4.6.3<br/>
+  Compiled: gcc -marm -O0 -o 01_hello_world_ARM <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -d 01_hello_world_ARM<br/> 
+ </div> 
+
+ <!-- Code section -->
+ <table class="table">
+ <tr>
+ <td class="column">
+ <pre><code>
+ 000083d4 &lt;main&gt;:
+     83d4:       e92d4800        push    {fp, lr}
+     83d8:       e28db004        add     fp, sp, #4
+     83dc:       e59f3014        ldr     r3, [pc, #20]   ; 83f8 &lt;main+0x24&gt;
+     83e0:       e1a00003        mov     r0, r3
+     83e4:       ebffffc0        bl      82ec &lt;printf@plt&gt;
+     83e8:       e1a00003        mov     r0, r3
+     83ec:       e24bd004        sub     sp, fp, #4
+     83f0:       e8bd4800        pop     {fp, lr}
+     83f4:       e12fff1e        bx      lr
+     83f8:       00008480        .word   0x00008480
+
+ </code></pre>
+ </td>
+
+ <!-- Comments section -->
+ <td class="column">
+     <ul>
+         <!-- Place comments here -->
+     </ul>
+ </td>
+
+ </tr>
+ </table>
+
+ <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_ARM 
+ 
+ <table class="table">
+ <tr> 
+ <td class="column">
+ <pre><code>
+ 
+ 01_hello_world_ARM:     file format elf32-littlearm
+
+ Contents of section .rodata:
+ 847c 01000200 48656c6c 6f20576f 726c6400  ....Hello World.
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- ARM 32 bit Assembly (Thumb) -->
+ <div style="column">
+  <b>ARM 32bit Assembler (Thumb)</b><br/>
+  GCC: 4.6.3<br/>
+  Compiled: gcc -mthumb -O0 -o 01_hello_world_THB <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -d 01_hello_world_THB<br/> 
+ </div> 
+
+ <!-- Code section -->
+ <table class="table">
+ <tr>
+ <td class="column">
+ <pre><code>
+ 000083d8 &lt;main&gt;:
+     83d8:       b580            push    {r7, lr}
+     83da:       af00            add     r7, sp, #0
+     83dc:       4b04            ldr     r3, [pc, #16]   ; (83f0 &lt;main+0x18&gt;)
+     83de:       1c18            adds    r0, r3, #0
+     83e0:       f7ff ff84       bl      82ec &lt;printf@plt&gt;
+     83e4:       1c18            adds    r0, r3, #0
+     83e6:       46bd            mov     sp, r7
+     83e8:       bc80            pop     {r7}
+     83ea:       bc02            pop     {r1}
+     83ec:       4708            bx      r1
+     83ee:       46c0            nop                     ; (mov r8, r8)
+     83f0:       00008478        .word   0x00008478
+ </code></pre>
+ </td>
+
+ <!-- Comments section -->
+ <td class="column">
+     <ul>
+         <!-- Place comments here -->
+     </ul>
+ </td>
+ </tr>
+ </table>
+ 
+  <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_THB 
+ 
+ <table class="table">
+ <tr> 
+ <td class="column">
+ <pre><code>
+ 
+ 01_hello_world_THB:     file format elf32-littlearm
+
+ Contents of section .rodata:
+ 8474 01000200 48656c6c 6f20576f 726c6400  ....Hello World.
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+ <hr/> 
+ 
+ <!-- ARM 32 bit Assembly (Thumb-2) -->
+ <div style="column">
+  <b>ARM 32bit Assembler (Thumb-2)</b><br/>
+  GCC: 5.4.0<br/>
+  Compiled: gcc -mthumb -march=armv7-a -O0 -o 01_hello_world_THB2 <a href="C_code/01_Hello_World/01_hello_world.c">01_hello_world.c</a><br/>
+  Dumped: objdump -d 01_hello_world_THB2<br/>
+ </div>
+
+ <!-- Code section -->
+ <table class="table">
+ <tr>
+ <td class="column">
+ <pre><code>
+  000103f8 &lt;main&gt;:
+     103f8:       b580            push    {r7, lr}
+     103fa:       af00            add     r7, sp, #0
+     103fc:       f240 405c       movw    r0, #1116       ; 0x45c
+     10400:       f2c0 0001       movt    r0, #1
+     10404:       f7ff ef70       blx     102e8 &lt;printf@plt&gt;
+     10408:       2300            movs    r3, #0
+     1040a:       4618            mov     r0, r3
+     1040c:       bd80            pop     {r7, pc}
+     1040e:       bf00            nop
+ </code></pre>
+ </td>
+
+ <!-- Comments section -->
+ <td class="column">
+  <ul>
+  <!-- Place comments here -->
+  </ul>
+ </td>
+ </tr>
+ </table>
+
+ <!-- Additional data -->
+ Dumped: objdump -s -j .rodata 01_hello_world_THB2
+
+ <table class="table">
+ <tr> 
+ <td class="column">
+ <pre><code>
+
+ 01_hello_world_THB2:     file format elf32-littlearm
+
+ Contents of section .rodata:
+ 10458 01000200 48656c6c 6f20576f 726c6400  ....Hello World.
+ </code></pre>
+ </td>
+
+ <!-- Comments to additional data -->
+ <td class="column">
+ </td>
+ </tr>
+ </table>
+
+</body>
+</html>
